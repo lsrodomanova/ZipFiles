@@ -24,7 +24,7 @@ public class ZipFileTest {
 
     @Test
     void parseZipPDFTest() throws Exception {
-        ZipFile zf = new ZipFile(new File("C:/ZipFiles/src/test/resources/ziptest.zip"));
+        ZipFile zf = new ZipFile(new File("src/test/resources/ziptest.zip"));
         ZipInputStream zis = new ZipInputStream(cl.getResourceAsStream("ziptest.zip"));
             ZipEntry entry;
             while ((entry = zis.getNextEntry()) != null) {

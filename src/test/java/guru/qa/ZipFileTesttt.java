@@ -27,15 +27,15 @@ public class ZipFileTesttt {
 
     @Test
     void parseZipXlsxTest() throws Exception {
-        ZipFile zf = new ZipFile("src/test/resources/ziptest.zip");
-        ZipEntry entry;
-        InputStream is = cl.getResourceAsStream("ziptest.zip");
-        assert is != null;
-        ZipInputStream zis = new ZipInputStream(is);
-        while ((entry = zis.getNextEntry()) != null) {
-            try (InputStream stream = zf.getInputStream(entry)) {
-                XLS xls = new XLS(stream);
-                Assertions.assertThat(entry.getName().contains(xlsxName));
+        ZipFile zf = new ZipFile("C:/ZipFiles/src/test/resources/ziptest.zip");
+        try (ZipInputStream zis = new ZipInputStream(cl.getResourceAsStream("ziptest.zip"))) {
+            ZipEntry entry;
+            while ((entry = zis.getNextEntry()) != null) {
+                Assertions.assertThat(entry.getName()).isEqualTo(xlsxName);
+                try (InputStream stream = zf.getInputStream(entry)) {
+                    XLS xls = new XLS(stream);
+                //ДОДЕЛАТЬ
+                }
             }
         }
     }
@@ -43,31 +43,31 @@ public class ZipFileTesttt {
     @Test
     void parseZipCSVTest() throws Exception {
         ZipFile zf = new ZipFile("C:/ZipFiles/src/test/resources/ziptest.zip");
-        ZipEntry entry;
-        InputStream is = cl.getResourceAsStream("ziptest.zip");
-        assert is != null;
-        ZipInputStream zis = new ZipInputStream(is);
-        while ((entry = zis.getNextEntry()) != null) {
-            try (InputStream stream = zf.getInputStream(entry)) {
-                CSVReader reader = new CSVReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
-                List<String[]> content = reader.readAll();
-                org.assertj.core.api.Assertions.assertThat(entry.getName().contains(csvName));
+        try (ZipInputStream zis = new ZipInputStream(cl.getResourceAsStream("ziptest.zip"))) {
+            ZipEntry entry;
+            while ((entry = zis.getNextEntry()) != null) {
+                org.assertj.core.api.Assertions.assertThat(entry.getName()).isEqualTo(csvName);
+                try (InputStream stream = zf.getInputStream(entry)) {
+                    CSVReader reader = new CSVReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
+                    List<String[]> content = reader.readAll();
+                //ДОДЕЛАТЬ
+                }
             }
         }
     }
 
 
-        @Test
-        public void parseZipPDFTest() throws Exception {
+    @Test
+    public void parseZipPDFTest() throws Exception {
         ZipFile zf = new ZipFile("C:/ZipFiles/src/test/resources/ziptest.zip");
-        ZipEntry entry;
-        InputStream is = cl.getResourceAsStream("ziptest.zip");
-        assert is != null;
-        ZipInputStream zis = new ZipInputStream(is);
-        while ((entry = zis.getNextEntry()) != null) {
-            try (InputStream stream = zf.getInputStream(entry)) {
-                PDF pdf = new PDF(stream);
+        try (ZipInputStream zis = new ZipInputStream(cl.getResourceAsStream("ziptest.zip"))) {
+            ZipEntry entry;
+            while ((entry = zis.getNextEntry()) != null) {
                 org.assertj.core.api.Assertions.assertThat(entry.getName().contains(pdfName));
+                try (InputStream stream = zf.getInputStream(entry)) {
+                    PDF pdf = new PDF(stream);
+                //ДОДЕЛАТЬ
+                }
             }
         }
     }

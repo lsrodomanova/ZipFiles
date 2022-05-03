@@ -34,7 +34,7 @@ public class ZipFileTesttt {
                 if ((entry.getName()).contains(pdfName)) {
                     try (InputStream stream = zf.getInputStream(entry)) {
                         PDF pdf = new PDF(stream);
-                        org.assertj.core.api.Assertions.assertThat(pdf.numberOfPages).isEqualTo(5);
+                        Assertions.assertThat(pdf.numberOfPages).isEqualTo(5);
                     }
                 }
             }
@@ -51,8 +51,8 @@ public class ZipFileTesttt {
                     try (InputStream stream = zf.getInputStream(entry)) {
                         XLS xls = new XLS(stream);
                         String stringCellValue = xls.excel.getSheetAt(0).getRow(0).getCell(0).getStringCellValue();
-                        org.assertj.core.api.Assertions.assertThat(entry.getName()).isEqualTo(xlsxName);
-                        org.assertj.core.api.Assertions.assertThat(stringCellValue).contains("DR1");
+                        Assertions.assertThat(entry.getName()).isEqualTo(xlsxName);
+                        Assertions.assertThat(stringCellValue).contains("DR1");
                     }
                 }
             }
@@ -69,8 +69,8 @@ public class ZipFileTesttt {
                     try (InputStream stream = zf.getInputStream(entry)) {
                         CSVReader reader = new CSVReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
                         List<String[]> content = reader.readAll();
-                        org.assertj.core.api.Assertions.assertThat(entry.getName()).isEqualTo(csvName);
-                        org.assertj.core.api.Assertions.assertThat(content).containsAnyOf(
+                        Assertions.assertThat(entry.getName()).isEqualTo(csvName);
+                        Assertions.assertThat(content).containsAnyOf(
                                 new String[]{"New", "Year"}
                         );
                     }

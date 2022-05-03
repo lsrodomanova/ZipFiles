@@ -16,7 +16,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+
 
 
 public class ZipFileTesttt {
@@ -26,15 +26,34 @@ public class ZipFileTesttt {
     String csvName = "dates.csv";
 
     @Test
+    public void parseZipPDFTest() throws Exception {
+        ZipFile zf = new ZipFile(new File("src/test/resources/ziptest.zip"));
+        try (ZipInputStream is = new ZipInputStream(cl.getResourceAsStream("ziptest.zip"))) {
+            ZipEntry entry;
+            while ((entry = is.getNextEntry()) != null) {
+                if ((entry.getName()).contains(pdfName)) {
+                    try (InputStream stream = zf.getInputStream(entry)) {
+                        PDF pdf = new PDF(stream);
+                        org.assertj.core.api.Assertions.assertThat(pdf.numberOfPages).isEqualTo(5);
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
     void parseZipXlsxTest() throws Exception {
         ZipFile zf = new ZipFile("C:/ZipFiles/src/test/resources/ziptest.zip");
         try (ZipInputStream zis = new ZipInputStream(cl.getResourceAsStream("ziptest.zip"))) {
             ZipEntry entry;
             while ((entry = zis.getNextEntry()) != null) {
-                Assertions.assertThat(entry.getName()).isEqualTo(xlsxName);
-                try (InputStream stream = zf.getInputStream(entry)) {
-                    XLS xls = new XLS(stream);
-                //ДОДЕЛАТЬ
+                if ((entry.getName()).contains(xlsxName)) {
+                    try (InputStream stream = zf.getInputStream(entry)) {
+                        XLS xls = new XLS(stream);
+                        String stringCellValue = xls.excel.getSheetAt(0).getRow(0).getCell(0).getStringCellValue();
+                        org.assertj.core.api.Assertions.assertThat(entry.getName()).isEqualTo(xlsxName);
+                        org.assertj.core.api.Assertions.assertThat(stringCellValue).contains("DR1");
+                    }
                 }
             }
         }
@@ -46,32 +65,17 @@ public class ZipFileTesttt {
         try (ZipInputStream zis = new ZipInputStream(cl.getResourceAsStream("ziptest.zip"))) {
             ZipEntry entry;
             while ((entry = zis.getNextEntry()) != null) {
-                org.assertj.core.api.Assertions.assertThat(entry.getName()).isEqualTo(csvName);
-                try (InputStream stream = zf.getInputStream(entry)) {
-                    CSVReader reader = new CSVReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
-                    List<String[]> content = reader.readAll();
-                //ДОДЕЛАТЬ
-                }
-            }
-        }
-    }
-
-
-    @Test
-    public void parseZipPDFTest() throws Exception {
-        ZipFile zf = new ZipFile("C:/ZipFiles/src/test/resources/ziptest.zip");
-        try (ZipInputStream zis = new ZipInputStream(cl.getResourceAsStream("ziptest.zip"))) {
-            ZipEntry entry;
-            while ((entry = zis.getNextEntry()) != null) {
-                org.assertj.core.api.Assertions.assertThat(entry.getName().contains(pdfName));
-                try (InputStream stream = zf.getInputStream(entry)) {
-                    PDF pdf = new PDF(stream);
-                //ДОДЕЛАТЬ
+                if ((entry.getName()).contains(csvName)) {
+                    try (InputStream stream = zf.getInputStream(entry)) {
+                        CSVReader reader = new CSVReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
+                        List<String[]> content = reader.readAll();
+                        org.assertj.core.api.Assertions.assertThat(entry.getName()).isEqualTo(csvName);
+                        org.assertj.core.api.Assertions.assertThat(content).containsAnyOf(
+                                new String[]{"New", "Year"}
+                        );
+                    }
                 }
             }
         }
     }
 }
-
-
-
